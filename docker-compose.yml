@@ -1,0 +1,14 @@
+services:
+  postgres:
+    image: postgres:13-alpine
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=masakinDB # The PostgreSQL default database (automatically created at first launch)
+      - POSTGRES_USER=devuser
+      - POSTGRES_PASSWORD=password123
+    ports:
+      - '5432:5432'
+
+volumes:
+  db-data:
