@@ -27,10 +27,7 @@ import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
 const scrypt = promisify(_scrypt);
 
-import { Serializer } from 'src/libs/interceptors/serialize.intercepter';
-
-@ApiBearerAuth()
-@ApiTags('auth')
+import { Serializer } from '../../libs/interceptors/serialize.interceptor';
 @Controller('api/auth')
 export class AuthController {
   constructor(
@@ -51,7 +48,6 @@ export class AuthController {
     const salt = randomBytes(8).toString('hex');
     const has = (await scrypt(createUser.password, salt, 32)) as Buffer;
     const hasPassword = salt + '.' + has.toString('hex');
-
     try {
       const user = await this.userService.create(
         createUser.email,
@@ -63,7 +59,15 @@ export class AuthController {
       throw new ConflictException('username or email already used');
     }
   }
-
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'sign in to application with email and password' })
+  @ApiResponse({
+    status: HttpStatus.OK,
+    description: 'The found record',
+    example: {
+      access_token: 'some token use to access protection rout',
+    },
+  })
   @Post('/log-in')
   async signInUser(@Body() authUser: AuthUserDTO) {
     const user = await this.userService.find(authUser.email);
