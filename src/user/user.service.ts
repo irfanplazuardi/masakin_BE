@@ -31,6 +31,10 @@ export class UsersService {
       .getOne();
   }
 
+  getAll() {
+    return this.repo.find();
+  }
+
   async update(id: string, attrs: Partial<User>) {
     const user = await this.findOne(id);
     if (!user) {

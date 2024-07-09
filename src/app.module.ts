@@ -19,7 +19,7 @@ import { User } from './user/user.entity';
       username: 'devuser',
       password: 'password123',
       database: 'masakinDB',
-      entities: ['**/*.entity.ts'],
+      entities: [User],
       synchronize: true,
     }),
     UserModule,

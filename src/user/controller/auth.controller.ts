@@ -28,6 +28,7 @@ import { promisify } from 'util';
 const scrypt = promisify(_scrypt);
 
 import { Serializer } from '../../libs/interceptors/serialize.interceptor';
+@ApiTags('auth')
 @Controller('api/auth')
 export class AuthController {
   constructor(

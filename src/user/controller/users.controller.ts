@@ -33,6 +33,12 @@ import { UserDTO } from '../dtos/user';
 export class UsersController {
   constructor(private userService: UsersService) {}
 
+  @Get()
+  @Serializer(UserDTO)
+  getAllUser() {
+    return this.userService.getAll();
+  }
+
   @Delete('/:id')
   async removeUser(@Param('id') user_id: string) {
     await this.userService.remove(user_id);
