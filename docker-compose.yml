@@ -8,7 +8,7 @@ services:
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=password123
     ports:
-      - '5432:5432'
+      - '5433:5432' # this code equal to ourtside_port:container_port so to change how outside access to container change the first one
 
 volumes:
   db-data:

@@ -2,26 +2,31 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
-import { User } from './user/user.entity';
 import { RecipesModule } from './recipes/recipes.module';
-import { Recipe } from './recipes/entities/recipe.entity';
-
+import { ConfigModule, ConfigService } from '@nestjs/config';
 @Module({
   imports: [
+    ConfigModule.forRoot({
+      isGlobal: true, // Makes ConfigModule available globally
+    }),
     JwtModule.register({
       global: true,
       secret: 'this is secret',
-      signOptions: { expiresIn: '60s' },
+      signOptions: { expiresIn: '7d' },
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: '0.0.0.0',
-      port: 5432,
-      username: 'postgres',
-      password: '1234',
-      database: 'masakin',
-      entities: [User, Recipe],
-      synchronize: true,
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: 'postgres',
+        host: configService.get<string>('DB_HOST'),
+        port: 5433,
+        username: configService.get<string>('DB_USERNAME'),
+        password: configService.get<string>('DB_PASSWORD'),
+        database: configService.get<string>('DB_DATABASE'),
+        entities: [__dirname + '/**/*.entity{.ts,.js}'],
+        synchronize: configService.get<boolean>('DB_SYNCHRONIZE'),
+      }),
     }),
     UserModule,
     RecipesModule,
