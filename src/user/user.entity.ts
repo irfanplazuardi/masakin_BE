@@ -5,20 +5,24 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
-
+import { Exclude } from 'class-transformer';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('uuid')
   user_id: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   username: string;
 
-  @Column()
+  @Column({
+    unique: true,
+  })
   email: string;
 
   @Column()
-  password_hash: string;
+  password: string;
 
   @CreateDateColumn({
     type: 'timestamp',
