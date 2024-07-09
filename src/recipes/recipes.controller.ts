@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
-import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { CreateRecipeDto } from './dtos/create-recipe.dto';
+import { UpdateRecipeDto } from './dtos/update-recipe.dto';
 
 @Controller('recipes')
 export class RecipesController {

@@ -8,7 +8,6 @@ async function bootstrap() {
     .setTitle('Masakin  api')
     .setDescription('This app use as recept catalog application ')
     .setVersion('1.0')
-    .addTag('masakin ')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);

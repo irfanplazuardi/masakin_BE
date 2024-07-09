@@ -9,7 +9,6 @@ import {
 } from '@nestjs/common';
 
 import {
-  ApiBearerAuth,
   ApiOperation,
   ApiResponse,
   ApiTags,
@@ -47,13 +46,13 @@ export class AuthController {
   @Serializer(UserDTO)
   async userSignUp(@Body() createUser: CreateUserDTO) {
     const salt = randomBytes(8).toString('hex');
-    const has = (await scrypt(createUser.password, salt, 32)) as Buffer;
-    const hasPassword = salt + '.' + has.toString('hex');
+    const hash = (await scrypt(createUser.password, salt, 32)) as Buffer;
+    const hashPassword = salt + '.' + hash.toString('hex');
     try {
       const user = await this.userService.create(
         createUser.email,
         createUser.username,
-        hasPassword,
+        hashPassword,
       );
       return user;
     } catch (error) {

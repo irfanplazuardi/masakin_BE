@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateRecipeDto } from './dto/create-recipe.dto';
-import { UpdateRecipeDto } from './dto/update-recipe.dto';
+import { CreateRecipeDto } from './dtos/create-recipe.dto';
+import { UpdateRecipeDto } from './dtos/update-recipe.dto';
 import { Recipe } from './entities/recipe.entity';
 
 @Injectable()

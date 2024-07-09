@@ -1,4 +1,4 @@
-import { Expose, Exclude } from 'class-transformer';
+import { Expose } from 'class-transformer';
 
 export class UserDTO {
   @Expose()
