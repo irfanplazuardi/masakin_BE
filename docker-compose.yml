@@ -9,6 +9,14 @@ services:
       - POSTGRES_PASSWORD=password123
     ports:
       - '5433:5432' # this code equal to ourtside_port:container_port so to change how outside access to container change the first one
-
+  masakin_be:
+    environment:
+      - JWT_SECRET_KEY="This is jwt secret key"
+      - DB_HOST= '0.0.0.0'
+      - DB_PORT= 5433
+      - DB_USERNAME= 'devuser'
+      - DB_PASSWORD= 'password123'
+      - DB_DATABASE= 'masakinDB'
+      - DB_SYNCHRONIZE= true
 volumes:
   db-data:
