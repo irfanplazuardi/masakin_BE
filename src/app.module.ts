@@ -11,9 +11,18 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     }),
     JwtModule.register({
       global: true,
-      secret: 'this is secret',
+      secret: process.env.JWT_SECRET_KEY,
       signOptions: { expiresIn: '7d' },
     }),
+    // JwtModule.registerAsync({
+    //   imports: [ConfigModule],
+    //   inject: [ConfigService],
+    //   useFactory: (configService: ConfigService) => ({
+    //     global: true,
+    //     secret: configService.get<string>('JWT_SECRET_KEY'),
+    //     signOptions: { expiresIn: '7d' },
+    //   }),
+    // }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
