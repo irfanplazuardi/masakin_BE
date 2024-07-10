@@ -1,14 +1,35 @@
 services:
-  postgres:
+  postgres_db:
     image: postgres:13-alpine
+    container_name: postgres_db
     volumes:
       - db-data:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=masakinDB # The PostgreSQL default database (automatically created at first launch)
+      - POSTGRES_DB=masakinDB
       - POSTGRES_USER=devuser
       - POSTGRES_PASSWORD=password123
     ports:
       - '5432:5432'
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  masakin_be:
+    build: .
+    ports:
+      - '3000:3000'
+    environment:
+      - JWT_SECRET_KEY=This is jwt secret key
+      - DB_HOST=postgres_db
+      - DB_PORT=5432 # This should match the internal port of the Postgres container
+      - DB_USERNAME=devuser
+      - DB_PASSWORD=password123
+      - DB_DATABASE=masakinDB
+      - DB_SYNCHRONIZE=true
+    depends_on:
+      - postgres_db
 
 volumes:
   db-data:
