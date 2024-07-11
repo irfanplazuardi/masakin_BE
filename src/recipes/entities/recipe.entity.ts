@@ -12,6 +12,7 @@ import { RecipeIngredient } from './recipeIngredient.entity';
 import { Equipment } from './equipment.entity';
 import { Category } from './category.entity';
 import { Instruction } from './instruction.entity';
+import { Rating } from './rating.entity';
 
 @Entity()
 export class Recipe {
@@ -76,4 +77,7 @@ export class Recipe {
 
   @OneToMany(() => Instruction, (instruction) => instruction.recipe)
   instructions: Instruction[];
+
+  @OneToMany(() => Rating, (rating) => rating.recipe)
+  rating: Rating[];
 }
