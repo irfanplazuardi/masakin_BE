@@ -1,4 +1,5 @@
 import { Rating } from 'src/recipes/entities/rating.entity';
+import { Recipe } from 'src/recipes/entities/recipe.entity';
 import {
   Entity,
   Column,
@@ -39,6 +40,9 @@ export class User {
   })
   updated_at: Date;
 
+  @OneToMany(() => Recipe, (recipe) => recipe.user)
+  recipes: Recipe[];
+
   @OneToMany(() => Rating, (rating) => rating.user)
-  rating: Rating[];
+  ratings: Rating[];
 }

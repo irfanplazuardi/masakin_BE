@@ -7,7 +7,7 @@ export class Rating {
   @PrimaryGeneratedColumn()
   rating_id: number;
 
-  @ManyToOne(() => User, (user) => user.rating)
+  @ManyToOne(() => User, (user) => user.ratings)
   user: User;
 
   @ManyToOne(() => Recipe, (recipe) => recipe.rating)

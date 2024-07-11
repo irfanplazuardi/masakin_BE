@@ -7,17 +7,22 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
 import { RecipeIngredient } from './recipeIngredient.entity';
 import { Equipment } from './equipment.entity';
 import { Category } from './category.entity';
 import { Instruction } from './instruction.entity';
 import { Rating } from './rating.entity';
+import { User } from 'src/user/user.entity';
 
 @Entity()
 export class Recipe {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => User, (user) => user.recipes)
+  user: User;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
