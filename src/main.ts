@@ -3,7 +3,11 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: process.env.NODE_ENV === 'prod' ? false : ['warn', 'error', 'log'],
+  });
+
+  app.enableCors();
   const config = new DocumentBuilder()
     .setTitle('Masakin  api')
     .setDescription('This app use as recept catalog application ')
@@ -14,7 +18,6 @@ async function bootstrap() {
   SwaggerModule.setup('api', app, document, {
     jsonDocumentUrl: 'swagger/json',
   });
-
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
