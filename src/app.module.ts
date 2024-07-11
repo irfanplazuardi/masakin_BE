@@ -4,8 +4,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { UserModule } from './user/user.module';
 import { RecipesModule } from './recipes/recipes.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+// import { dataSourceOption } from './data-source';
 
-import { dataSourceOption } from './data-source';
 @Module({
   imports: [
     ConfigModule.forRoot({
