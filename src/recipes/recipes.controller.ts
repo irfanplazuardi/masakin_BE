@@ -15,10 +15,10 @@ import { UpdateRecipeDto } from './dtos/update-recipe.dto';
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
-  @Post()
-  create(@Body() createRecipeDto: CreateRecipeDto) {
-    return this.recipesService.create(createRecipeDto);
-  }
+  // @Post()
+  // create(@Body() createRecipeDto: CreateRecipeDto) {
+  //   return this.recipesService.create(createRecipeDto);
+  // }
 
   @Get()
   findAll() {

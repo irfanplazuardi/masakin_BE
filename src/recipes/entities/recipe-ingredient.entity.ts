@@ -7,7 +7,7 @@ export class RecipeIngredient {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.recipeIngredients)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ingredient)
   recipe: Recipe;
 
   @ManyToOne(() => Ingredient, (ingredient) => ingredient.recipeIngredients)

@@ -1,10 +1,10 @@
 import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
-import { RecipeIngredient } from './recipeIngredient.entity';
+import { RecipeIngredient } from './recipe-ingredient.entity';
 
 @Entity()
 export class Ingredient {
   @PrimaryGeneratedColumn()
-  ingredient_id: number;
+  id: number;
 
   @Column()
   name: string;

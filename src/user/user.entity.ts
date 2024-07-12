@@ -1,4 +1,4 @@
-import { Rating } from 'src/recipes/entities/rating.entity';
+import { RecipeRating } from 'src/recipes/entities/recipe-rating.entity';
 import { Recipe } from 'src/recipes/entities/recipe.entity';
 import {
   Entity,
@@ -43,6 +43,6 @@ export class User {
   @OneToMany(() => Recipe, (recipe) => recipe.user)
   recipes: Recipe[];
 
-  @OneToMany(() => Rating, (rating) => rating.user)
-  ratings: Rating[];
+  @OneToMany(() => RecipeRating, (rating) => rating.user)
+  ratings: RecipeRating[];
 }

@@ -9,12 +9,12 @@ import {
   JoinTable,
   ManyToOne,
 } from 'typeorm';
-import { RecipeIngredient } from './recipeIngredient.entity';
+import { User } from 'src/user/user.entity';
+import { RecipeIngredient } from './recipe-ingredient.entity';
 import { Equipment } from './equipment.entity';
 import { Category } from './category.entity';
-import { Instruction } from './instruction.entity';
-import { Rating } from './rating.entity';
-import { User } from 'src/user/user.entity';
+import { RecipeInstruction } from './recipe-instruction.entity';
+import { RecipeRating } from './recipe-rating.entity';
 
 @Entity()
 export class Recipe {
@@ -54,16 +54,16 @@ export class Recipe {
 
   @OneToMany(
     () => RecipeIngredient,
-    (recipeIngredient) => recipeIngredient.recipe,
+    (RecipeIngredient) => RecipeIngredient.recipe,
   )
-  recipeIngredients: RecipeIngredient[];
+  ingredient: RecipeIngredient[];
 
   @ManyToMany(() => Equipment, (equipment) => equipment.recipes)
   @JoinTable({
     name: 'recipe_equipment',
-    joinColumn: { name: 'id', referencedColumnName: 'id' },
+    joinColumn: { name: 'recipeId', referencedColumnName: 'id' },
     inverseJoinColumn: {
-      name: 'equipment_id',
+      name: 'equipmentId',
       referencedColumnName: 'equipment_id',
     },
   })
@@ -72,17 +72,17 @@ export class Recipe {
   @ManyToMany(() => Category, (category) => category.recipes)
   @JoinTable({
     name: 'recipe_categories',
-    joinColumn: { name: 'id', referencedColumnName: 'id' },
+    joinColumn: { name: 'recipeId', referencedColumnName: 'id' },
     inverseJoinColumn: {
-      name: 'category_id',
+      name: 'categoryId',
       referencedColumnName: 'category_id',
     },
   })
   categories: Category[];
 
-  @OneToMany(() => Instruction, (instruction) => instruction.recipe)
-  instructions: Instruction[];
+  @OneToMany(() => RecipeInstruction, (instruction) => instruction.recipe)
+  instructions: RecipeInstruction[];
 
-  @OneToMany(() => Rating, (rating) => rating.recipe)
-  rating: Rating[];
+  @OneToMany(() => RecipeRating, (rating) => rating.recipe)
+  ratings: RecipeRating[];
 }

@@ -3,14 +3,14 @@ import { User } from '../../user/user.entity';
 import { Recipe } from './recipe.entity';
 
 @Entity()
-export class Rating {
+export class RecipeRating {
   @PrimaryGeneratedColumn()
   rating_id: number;
 
   @ManyToOne(() => User, (user) => user.ratings)
   user: User;
 
-  @ManyToOne(() => Recipe, (recipe) => recipe.rating)
+  @ManyToOne(() => Recipe, (recipe) => recipe.ratings)
   recipe: Recipe;
 
   @Column()
