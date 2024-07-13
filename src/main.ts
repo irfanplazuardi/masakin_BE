@@ -9,14 +9,15 @@ async function bootstrap() {
 
   app.enableCors();
   const config = new DocumentBuilder()
-    .setTitle('Masakin  api')
-    .setDescription('This app use as recept catalog application ')
+    .setTitle('Masakin  API')
+    .setDescription('This app use as recipe catalog application ')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document, {
     jsonDocumentUrl: 'swagger/json',
+    customSiteTitle: 'Masakin API Docs',
   });
   await app.listen(process.env.PORT || 3000);
 }

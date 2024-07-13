@@ -11,7 +11,9 @@ import {
 import { RecipesService } from './recipes.service';
 // import { CreateRecipeDto } from './dtos/create-recipe.dto';
 import { UpdateRecipeDto } from './dtos/update-recipe.dto';
+import { ApiQuery, ApiTags } from '@nestjs/swagger';
 
+@ApiTags('recipes')
 @Controller('recipes')
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
@@ -27,6 +29,7 @@ export class RecipesController {
   }
 
   @Get('/recent')
+  @ApiQuery({ name: 'category', required: false, type: String })
   findRecentRecipes(@Query('category') category?: string) {
     return this.recipesService.findRecentRecipes(category);
   }
