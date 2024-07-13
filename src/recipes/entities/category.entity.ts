@@ -9,9 +9,6 @@ export class Category {
   @Column({ unique: true })
   name: string;
 
-  @Column({ type: 'text', nullable: true })
-  description: string;
-
   @ManyToMany(() => Recipe, (recipe) => recipe.categories)
   recipes: Recipe[];
 }

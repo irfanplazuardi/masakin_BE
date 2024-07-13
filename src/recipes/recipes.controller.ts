@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
 // import { CreateRecipeDto } from './dtos/create-recipe.dto';
@@ -26,8 +27,8 @@ export class RecipesController {
   }
 
   @Get('/recent')
-  findRecentRecipes() {
-    return this.recipesService.findRecentRecipes();
+  findRecentRecipes(@Query('category') category?: string) {
+    return this.recipesService.findRecentRecipes(category);
   }
 
   @Get(':id')

@@ -43,7 +43,13 @@ export class RecipesService {
     });
   }
 
-  async findRecentRecipes(): Promise<Recipe[]> {
+  async findRecentRecipes(category?: string): Promise<Recipe[]> {
+    const whereCondition = {};
+
+    if (category) {
+      whereCondition['categories'] = { name: category };
+    }
+
     return this.recipeRepository.find({
       select: {
         id: true,
@@ -51,7 +57,12 @@ export class RecipesService {
         image_url: true,
         recipe_rating: true,
         time_estimation: true,
+        created_at: true,
       },
+      relations: {
+        categories: true,
+      },
+      where: whereCondition,
       order: { created_at: 'DESC' },
       take: 10,
     });
