@@ -1,14 +1,14 @@
 import {
   Controller,
   Get,
-  Post,
+  // Post,
   Body,
   Patch,
   Param,
   Delete,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
-import { CreateRecipeDto } from './dtos/create-recipe.dto';
+// import { CreateRecipeDto } from './dtos/create-recipe.dto';
 import { UpdateRecipeDto } from './dtos/update-recipe.dto';
 
 @Controller('recipes')
@@ -21,22 +21,30 @@ export class RecipesController {
   // }
 
   @Get()
-  findAll() {
-    return this.recipesService.findAll();
+  findAllRecipe() {
+    return this.recipesService.findAllRecipe();
+  }
+
+  @Get('/recent')
+  findRecentRecipes() {
+    return this.recipesService.findRecentRecipes();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.recipesService.findOne(+id);
+  findRecipeByID(@Param('id') id: string) {
+    return this.recipesService.findRecipeByID(+id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRecipeDto: UpdateRecipeDto) {
-    return this.recipesService.update(+id, updateRecipeDto);
+  updateRecipe(
+    @Param('id') id: string,
+    @Body() updateRecipeDto: UpdateRecipeDto,
+  ) {
+    return this.recipesService.updateRecipe(+id, updateRecipeDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.recipesService.remove(+id);
+  removeRecipe(@Param('id') id: string) {
+    return this.recipesService.removeRecipe(+id);
   }
 }

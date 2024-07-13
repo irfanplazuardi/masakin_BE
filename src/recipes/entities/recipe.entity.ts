@@ -36,11 +36,14 @@ export class Recipe {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'int', default: 3 })
+  @Column({ default: 3 })
   difficulty: number; // 1: easy, 2: normal, 3: challenging
 
   @Column({ type: 'int' })
   time_estimation: number; // Time in minutes
+
+  @Column({ default: 5, type: 'decimal', precision: 3, scale: 1 })
+  recipe_rating: number;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;

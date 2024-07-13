@@ -31,7 +31,7 @@ export class RecipesService {
     private userRepository: Repository<RecipeIngredient>,
   ) {}
 
-  async findAll(): Promise<Recipe[]> {
+  async findAllRecipe(): Promise<Recipe[]> {
     return this.recipeRepository.find({
       relations: [
         'ingredient',
@@ -43,7 +43,21 @@ export class RecipesService {
     });
   }
 
-  async findOne(id: number): Promise<any> {
+  async findRecentRecipes(): Promise<Recipe[]> {
+    return this.recipeRepository.find({
+      select: {
+        id: true,
+        title: true,
+        image_url: true,
+        recipe_rating: true,
+        time_estimation: true,
+      },
+      order: { created_at: 'DESC' },
+      take: 10,
+    });
+  }
+
+  async findRecipeByID(id: number): Promise<any> {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: [
@@ -59,16 +73,19 @@ export class RecipesService {
       throw new NotFoundException(`Recipe with id ${id} not found`);
     }
 
+    const { user, ...recipeData } = recipe;
+
     return {
-      ...recipe,
-      user: recipe.user?.user_id,
-      ingredient: recipe.ingredient.map(ing => ({
-        id: ing.ingredient.id,
-        quantity: ing.quantity,
-        measurement_unit: ing.measurement_unit,
-        name: ing.ingredient.name,
-        image_url: ing.ingredient.image_url,
-        description: ing.ingredient.description,
+      id: recipe.id,
+      user_id: user?.user_id,
+      ...recipeData,
+      ingredient: recipe.ingredient.map((ingredient) => ({
+        id: ingredient.ingredient.id,
+        quantity: ingredient.quantity,
+        measurement_unit: ingredient.measurement_unit,
+        name: ingredient.ingredient.name,
+        image_url: ingredient.ingredient.image_url,
+        description: ingredient.ingredient.description,
       })),
     };
   }
@@ -144,12 +161,12 @@ export class RecipesService {
   //   return this.recipeRepository.save(recipe);
   // }
 
-  async update(id: number, recipeData: any): Promise<Recipe> {
+  async updateRecipe(id: number, recipeData: any): Promise<Recipe> {
     await this.recipeRepository.update(id, recipeData);
-    return this.findOne(id);
+    return this.findRecipeByID(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async removeRecipe(id: number): Promise<void> {
     await this.recipeRepository.delete(id);
   }
 }
