@@ -1,9 +1,12 @@
+import { RecipeRating } from 'src/recipes/entities/recipe-rating.entity';
+import { Recipe } from 'src/recipes/entities/recipe.entity';
 import {
   Entity,
   Column,
   PrimaryGeneratedColumn,
   CreateDateColumn,
   UpdateDateColumn,
+  OneToMany,
 } from 'typeorm';
 
 @Entity()
@@ -36,4 +39,10 @@ export class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   updated_at: Date;
+
+  @OneToMany(() => Recipe, (recipe) => recipe.user)
+  recipes: Recipe[];
+
+  @OneToMany(() => RecipeRating, (rating) => rating.user)
+  ratings: RecipeRating[];
 }

@@ -7,16 +7,22 @@ import {
   OneToMany,
   ManyToMany,
   JoinTable,
+  ManyToOne,
 } from 'typeorm';
-import { RecipeIngredient } from './recipeIngredient.entity';
+import { User } from 'src/user/user.entity';
+import { RecipeIngredient } from './recipe-ingredient.entity';
 import { Equipment } from './equipment.entity';
 import { Category } from './category.entity';
-import { Instruction } from './instruction.entity';
+import { RecipeInstruction } from './recipe-instruction.entity';
+import { RecipeRating } from './recipe-rating.entity';
 
 @Entity()
 export class Recipe {
   @PrimaryGeneratedColumn()
   id: number;
+
+  @ManyToOne(() => User, (user) => user.recipes)
+  user: User;
 
   @Column({ type: 'varchar', length: 255 })
   title: string;
@@ -30,11 +36,14 @@ export class Recipe {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @Column({ type: 'int', default: 3 })
+  @Column({ default: 3 })
   difficulty: number; // 1: easy, 2: normal, 3: challenging
 
   @Column({ type: 'int' })
   time_estimation: number; // Time in minutes
+
+  @Column({ default: 5, type: 'decimal', precision: 3, scale: 1 })
+  recipe_rating: number;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   created_at: Date;
@@ -48,16 +57,16 @@ export class Recipe {
 
   @OneToMany(
     () => RecipeIngredient,
-    (recipeIngredient) => recipeIngredient.recipe,
+    (RecipeIngredient) => RecipeIngredient.recipe,
   )
-  recipeIngredients: RecipeIngredient[];
+  ingredient: RecipeIngredient[];
 
   @ManyToMany(() => Equipment, (equipment) => equipment.recipes)
   @JoinTable({
     name: 'recipe_equipment',
-    joinColumn: { name: 'id', referencedColumnName: 'id' },
+    joinColumn: { name: 'recipeId', referencedColumnName: 'id' },
     inverseJoinColumn: {
-      name: 'equipment_id',
+      name: 'equipmentId',
       referencedColumnName: 'equipment_id',
     },
   })
@@ -66,14 +75,17 @@ export class Recipe {
   @ManyToMany(() => Category, (category) => category.recipes)
   @JoinTable({
     name: 'recipe_categories',
-    joinColumn: { name: 'id', referencedColumnName: 'id' },
+    joinColumn: { name: 'recipeId', referencedColumnName: 'id' },
     inverseJoinColumn: {
-      name: 'category_id',
+      name: 'categoryId',
       referencedColumnName: 'category_id',
     },
   })
   categories: Category[];
 
-  @OneToMany(() => Instruction, (instruction) => instruction.recipe)
-  instructions: Instruction[];
+  @OneToMany(() => RecipeInstruction, (instruction) => instruction.recipe)
+  instructions: RecipeInstruction[];
+
+  @OneToMany(() => RecipeRating, (rating) => rating.recipe)
+  ratings: RecipeRating[];
 }
