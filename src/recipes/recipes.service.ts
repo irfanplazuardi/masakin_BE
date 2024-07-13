@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Recipe } from './entities/recipe.entity';
@@ -43,16 +43,34 @@ export class RecipesService {
     });
   }
 
-  async findOne(id: number): Promise<Recipe> {
-    return this.recipeRepository.findOne({
+  async findOne(id: number): Promise<any> {
+    const recipe = await this.recipeRepository.findOne({
       where: { id },
       relations: [
+        'user',
         'ingredient.ingredient',
         'equipment',
         'categories',
         'instructions',
       ],
     });
+
+    if (!recipe) {
+      throw new NotFoundException(`Recipe with id ${id} not found`);
+    }
+
+    return {
+      ...recipe,
+      user: recipe.user?.user_id,
+      ingredient: recipe.ingredient.map(ing => ({
+        id: ing.ingredient.id,
+        quantity: ing.quantity,
+        measurement_unit: ing.measurement_unit,
+        name: ing.ingredient.name,
+        image_url: ing.ingredient.image_url,
+        description: ing.ingredient.description,
+      })),
+    };
   }
 
   // async create(recipeData: any): Promise<Recipe> {
