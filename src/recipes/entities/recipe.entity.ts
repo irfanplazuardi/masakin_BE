@@ -27,10 +27,10 @@ export class Recipe {
   @Column({ type: 'varchar', length: 255 })
   title: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   image_url: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, nullable: true })
   video_url: string;
 
   @Column({ type: 'text', nullable: true })
@@ -59,7 +59,7 @@ export class Recipe {
     () => RecipeIngredient,
     (RecipeIngredient) => RecipeIngredient.recipe,
   )
-  ingredient: RecipeIngredient[];
+  ingredients: RecipeIngredient[];
 
   @ManyToMany(() => Equipment, (equipment) => equipment.recipes)
   @JoinTable({
@@ -70,7 +70,7 @@ export class Recipe {
       referencedColumnName: 'equipment_id',
     },
   })
-  equipment: Equipment[];
+  equipments: Equipment[];
 
   @ManyToMany(() => Category, (category) => category.recipes)
   @JoinTable({

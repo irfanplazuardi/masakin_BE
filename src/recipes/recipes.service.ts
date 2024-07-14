@@ -1,35 +1,97 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Recipe } from './entities/recipe.entity';
 import { Ingredient } from './entities/ingredient.entity';
 import { Equipment } from './entities/equipment.entity';
 import { Category } from './entities/category.entity';
 import { RecipeInstruction } from './entities/recipe-instruction.entity';
-import { RecipeRating } from './entities/recipe-rating.entity';
 import { RecipeIngredient } from './entities/recipe-ingredient.entity';
-import { User } from 'src/user/user.entity';
+import { CreateRecipeDto } from './dtos/create-recipe.dto';
 
 @Injectable()
 export class RecipesService {
   constructor(
     @InjectRepository(Recipe)
     private recipeRepository: Repository<Recipe>,
-    @InjectRepository(Ingredient)
-    private ingredientRepository: Repository<Ingredient>,
-    @InjectRepository(Equipment)
-    private equipmentRepository: Repository<Equipment>,
-    @InjectRepository(Category)
-    private categoryRepository: Repository<Category>,
-    @InjectRepository(RecipeInstruction)
-    private instructionRepository: Repository<RecipeInstruction>,
-    @InjectRepository(RecipeRating)
-    private ratingRepository: Repository<RecipeRating>,
-    @InjectRepository(RecipeIngredient)
-    private recipeIngredientRepository: Repository<RecipeIngredient>,
-    @InjectRepository(User)
-    private userRepository: Repository<RecipeIngredient>,
+    private dataSource: DataSource,
   ) {}
+
+  async createRecipe(
+    recipeData: CreateRecipeDto,
+    user_id: string,
+  ): Promise<Recipe> {
+    const {
+      ingredients,
+      equipments,
+      categories,
+      instructions,
+      ...recipeDetails
+    } = recipeData;
+    const queryRunner = this.dataSource.createQueryRunner();
+
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const savedRecipe = await queryRunner.manager.save(Recipe, {
+        ...recipeDetails,
+        user: { user_id: user_id },
+      });
+      for (const ingredient of ingredients) {
+        const savedIngredient = await queryRunner.manager.save(Ingredient, {
+          name: ingredient.name,
+        });
+
+        await queryRunner.manager.save(RecipeIngredient, {
+          recipe: { id: savedRecipe.id },
+          ingredient: { id: savedIngredient.id },
+          quantity: ingredient.quantity,
+          measurement_unit: ingredient.measurement_unit,
+        });
+      }
+
+      savedRecipe.equipments = [];
+      for (const equipment of equipments) {
+        const savedEquipment = await queryRunner.manager.save(
+          Equipment,
+          equipment,
+        );
+        savedRecipe.equipments.push(savedEquipment);
+      }
+
+      savedRecipe.categories = [];
+      for (const category of categories) {
+        const savedCategory = await queryRunner.manager.save(
+          Category,
+          category,
+        );
+        savedRecipe.categories.push(savedCategory);
+      }
+
+      savedRecipe.instructions = [];
+      for (const instruction of instructions) {
+        console.log(instruction);
+
+        const savedInstruction = await queryRunner.manager.save(
+          RecipeInstruction,
+          instruction,
+        );
+
+        savedRecipe.instructions.push(savedInstruction);
+      }
+
+      const data = await queryRunner.manager.save(Recipe, savedRecipe);
+      await queryRunner.commitTransaction();
+      return data;
+    } catch (error) {
+      // since we have errors lets rollback the changes we made
+      await queryRunner.rollbackTransaction();
+      throw error;
+    } finally {
+      // you need to release a queryRunner which was manually instantiated
+      await queryRunner.release();
+    }
+  }
 
   async findAllRecipe(): Promise<Recipe[]> {
     return this.recipeRepository.find({
@@ -73,8 +135,8 @@ export class RecipesService {
       where: { id },
       relations: [
         'user',
-        'ingredient.ingredient',
-        'equipment',
+        'ingredients.ingredient',
+        'equipments',
         'categories',
         'instructions',
       ],
@@ -90,7 +152,7 @@ export class RecipesService {
       id: recipe.id,
       user_id: user?.user_id,
       ...recipeData,
-      ingredient: recipe.ingredient.map((ingredient) => ({
+      ingredient: recipe.ingredients.map((ingredient) => ({
         id: ingredient.ingredient.id,
         quantity: ingredient.quantity,
         measurement_unit: ingredient.measurement_unit,
@@ -100,77 +162,6 @@ export class RecipesService {
       })),
     };
   }
-
-  // async create(recipeData: any): Promise<Recipe> {
-  //   const {
-  //     ingredients,
-  //     equipment,
-  //     categories,
-  //     instructions,
-  //     user_id,
-  //     ...recipeDetails
-  //   } = recipeData;
-
-  //   const recipe = new Recipe();
-  //   Object.assign(recipe, recipeDetails);
-  //   recipe.user = await this.userRepository.findOne(user_id);
-
-  //   // Handle ingredients
-  //   recipe.recipeIngredients = [];
-  //   for (const ingredientData of ingredients) {
-  //     let ingredient: Ingredient;
-  //     if (ingredientData.ingredient_id) {
-  //       ingredient = await this.ingredientRepository.findOne(
-  //         ingredientData.ingredient_id,
-  //       );
-  //     } else {
-  //       ingredient = new Ingredient();
-  //       ingredient.name = ingredientData.name;
-  //       await this.ingredientRepository.save(ingredient);
-  //     }
-  //     const recipeIngredient = new RecipeIngredient();
-  //     recipeIngredient.ingredient = ingredient;
-  //     recipeIngredient.quantity = ingredientData.quantity;
-  //     recipeIngredient.measurement_unit = ingredientData.measurement_unit;
-  //     recipe.recipeIngredients.push(recipeIngredient);
-  //   }
-
-  //   // Handle equipment
-  //   recipe.equipment = [];
-  //   for (const equipmentData of equipment) {
-  //     let equipmentEntity: Equipment;
-  //     if (equipmentData.equipment_id) {
-  //       equipmentEntity = await this.equipmentRepository.findOne(
-  //         equipmentData.equipment_id,
-  //       );
-  //     } else {
-  //       equipmentEntity = new Equipment();
-  //       equipmentEntity.name = equipmentData.name;
-  //       await this.equipmentRepository.save(equipmentEntity);
-  //     }
-  //     recipe.equipment.push(equipmentEntity);
-  //   }
-
-  //   // Handle categories
-  //   recipe.categories = [];
-  //   for (const categoryData of categories) {
-  //     const category = await this.categoryRepository.findOne(
-  //       categoryData.category_id,
-  //     );
-  //     recipe.categories.push(category);
-  //   }
-
-  //   // Handle instructions
-  //   recipe.instructions = [];
-  //   for (const instructionData of instructions) {
-  //     const instruction = new Instruction();
-  //     Object.assign(instruction, instructionData);
-  //     instruction.recipe = recipe;
-  //     recipe.instructions.push(instruction);
-  //   }
-
-  //   return this.recipeRepository.save(recipe);
-  // }
 
   async updateRecipe(id: number, recipeData: any): Promise<Recipe> {
     await this.recipeRepository.update(id, recipeData);

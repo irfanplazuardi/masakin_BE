@@ -15,6 +15,6 @@ export class Equipment {
   @Column({ type: 'text', nullable: true })
   description: string;
 
-  @ManyToMany(() => Recipe, (recipe) => recipe.equipment)
+  @ManyToMany(() => Recipe, (recipe) => recipe.equipments)
   recipes: Recipe[];
 }
