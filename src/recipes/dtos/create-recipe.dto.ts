@@ -5,21 +5,21 @@ import {
   IsArray,
   ValidateNested,
   IsInt,
-  IsUUID,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class IngredientDto {
   @IsOptional()
   @IsInt()
-  ingredient_id: number;
+  ingredient_id?: number;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name?: string;
 
   @IsInt()
+  @IsNotEmpty()
   quantity: number;
 
   @IsString()
@@ -30,17 +30,23 @@ class IngredientDto {
 class EquipmentDto {
   @IsOptional()
   @IsInt()
-  equipment_id: number;
+  equipment_id?: number;
 
   @IsOptional()
   @IsString()
   @IsNotEmpty()
-  name: string;
+  name?: string;
 }
 
 class CategoryDto {
+  @IsOptional()
   @IsInt()
-  category_id: number;
+  category_id?: number;
+
+  @IsOptional()
+  @IsString()
+  @IsNotEmpty()
+  name?: string;
 }
 
 class InstructionDto {
@@ -65,9 +71,6 @@ export class CreateRecipeDto {
   @IsNotEmpty()
   title: string;
 
-  @IsUUID()
-  user_id: string;
-
   @IsOptional()
   @IsString()
   image_url?: string;
@@ -81,8 +84,7 @@ export class CreateRecipeDto {
   description?: string;
 
   @IsInt()
-  @IsOptional()
-  difficulty?: number;
+  difficulty: number;
 
   @IsInt()
   time_estimation: number;
@@ -95,7 +97,7 @@ export class CreateRecipeDto {
   @IsArray()
   @ValidateNested({ each: true })
   @Type(() => EquipmentDto)
-  equipment: EquipmentDto[];
+  equipments: EquipmentDto[];
 
   @IsArray()
   @ValidateNested({ each: true })

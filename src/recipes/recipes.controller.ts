@@ -1,16 +1,17 @@
 import {
   Controller,
   Get,
-  // Post,
+  Post,
   Body,
   Patch,
   Param,
   Delete,
   Query,
   UseGuards,
+  Req,
 } from '@nestjs/common';
 import { RecipesService } from './recipes.service';
-// import { CreateRecipeDto } from './dtos/create-recipe.dto';
+import { CreateRecipeDto } from './dtos/create-recipe.dto';
 import { UpdateRecipeDto } from './dtos/update-recipe.dto';
 import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/libs/guard/auth.guard';
@@ -21,11 +22,12 @@ import { AuthGuard } from 'src/libs/guard/auth.guard';
 export class RecipesController {
   constructor(private readonly recipesService: RecipesService) {}
 
-  // @Post()
-  // @UseGuards(AuthGuard)
-  // create(@Body() createRecipeDto: CreateRecipeDto) {
-  //   return this.recipesService.create(createRecipeDto);
-  // }
+  @Post()
+  @UseGuards(AuthGuard)
+  createRecipe(@Body() recipeData: CreateRecipeDto, @Req() req) {
+    const user_id: string = req.user.sub;
+    return this.recipesService.createRecipe(recipeData, user_id);
+  }
 
   @Get()
   @UseGuards(AuthGuard)
