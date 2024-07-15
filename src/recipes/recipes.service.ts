@@ -39,7 +39,7 @@ export class RecipesService {
         user: { user_id: user_id },
       });
 
-      await Promise.all(
+      recipe.ingredients = await Promise.all(
         ingredients.map(async (ingredient) => {
           let savedIngredient = await queryRunner.manager.findOne(Ingredient, {
             where: { name: ingredient.name },
@@ -49,12 +49,16 @@ export class RecipesService {
               name: ingredient.name,
             });
           }
-          await queryRunner.manager.save(RecipeIngredient, {
-            recipe: { id: recipe.id },
-            ingredient: { id: savedIngredient.id },
-            quantity: ingredient.quantity,
-            measurement_unit: ingredient.measurement_unit,
-          });
+          const savedRecipeIngredient = await queryRunner.manager.save(
+            RecipeIngredient,
+            {
+              recipe: { id: recipe.id },
+              ingredient: savedIngredient,
+              quantity: ingredient.quantity,
+              measurement_unit: ingredient.measurement_unit,
+            },
+          );
+          return savedRecipeIngredient;
         }),
       );
 
