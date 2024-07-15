@@ -95,13 +95,7 @@ export class RecipesService {
 
   async findAllRecipe(): Promise<Recipe[]> {
     return this.recipeRepository.find({
-      relations: [
-        'ingredient',
-        'equipment',
-        'categories',
-        'instructions',
-        'ratings',
-      ],
+      relations: ['ingredients', 'equipments', 'categories', 'instructions'],
     });
   }
 
@@ -152,7 +146,7 @@ export class RecipesService {
       id: recipe.id,
       user_id: user?.user_id,
       ...recipeData,
-      ingredient: recipe.ingredients.map((ingredient) => ({
+      ingredients: recipe.ingredients.map((ingredient) => ({
         id: ingredient.ingredient.id,
         quantity: ingredient.quantity,
         measurement_unit: ingredient.measurement_unit,
