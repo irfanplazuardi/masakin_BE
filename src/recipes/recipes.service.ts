@@ -32,63 +32,76 @@ export class RecipesService {
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
+
     try {
-      const savedRecipe = await queryRunner.manager.save(Recipe, {
+      const recipe = await queryRunner.manager.save(Recipe, {
         ...recipeDetails,
         user: { user_id: user_id },
       });
-      for (const ingredient of ingredients) {
-        const savedIngredient = await queryRunner.manager.save(Ingredient, {
-          name: ingredient.name,
-        });
 
-        await queryRunner.manager.save(RecipeIngredient, {
-          recipe: { id: savedRecipe.id },
-          ingredient: { id: savedIngredient.id },
-          quantity: ingredient.quantity,
-          measurement_unit: ingredient.measurement_unit,
-        });
-      }
+      await Promise.all(
+        ingredients.map(async (ingredient) => {
+          let savedIngredient = await queryRunner.manager.findOne(Ingredient, {
+            where: { name: ingredient.name },
+          });
+          if (!savedIngredient) {
+            savedIngredient = await queryRunner.manager.save(Ingredient, {
+              name: ingredient.name,
+            });
+          }
+          await queryRunner.manager.save(RecipeIngredient, {
+            recipe: { id: recipe.id },
+            ingredient: { id: savedIngredient.id },
+            quantity: ingredient.quantity,
+            measurement_unit: ingredient.measurement_unit,
+          });
+        }),
+      );
 
-      savedRecipe.equipments = [];
-      for (const equipment of equipments) {
-        const savedEquipment = await queryRunner.manager.save(
-          Equipment,
-          equipment,
-        );
-        savedRecipe.equipments.push(savedEquipment);
-      }
+      recipe.equipments = await Promise.all(
+        equipments.map(async (equipment) => {
+          let savedEquipment = await queryRunner.manager.findOne(Equipment, {
+            where: { name: equipment.name },
+          });
+          if (!savedEquipment) {
+            savedEquipment = await queryRunner.manager.save(
+              Equipment,
+              equipment,
+            );
+          }
+          return savedEquipment;
+        }),
+      );
 
-      savedRecipe.categories = [];
-      for (const category of categories) {
-        const savedCategory = await queryRunner.manager.save(
-          Category,
-          category,
-        );
-        savedRecipe.categories.push(savedCategory);
-      }
+      recipe.categories = await Promise.all(
+        categories.map(async (category) => {
+          let savedCategory = await queryRunner.manager.findOne(Category, {
+            where: { name: category.name },
+          });
+          if (!savedCategory) {
+            savedCategory = await queryRunner.manager.save(Category, category);
+          }
+          return savedCategory;
+        }),
+      );
 
-      savedRecipe.instructions = [];
-      for (const instruction of instructions) {
-        console.log(instruction);
+      recipe.instructions = await Promise.all(
+        instructions.map(async (instruction) => {
+          const savedInstruction = await queryRunner.manager.save(
+            RecipeInstruction,
+            instruction,
+          );
+          return savedInstruction;
+        }),
+      );
 
-        const savedInstruction = await queryRunner.manager.save(
-          RecipeInstruction,
-          instruction,
-        );
-
-        savedRecipe.instructions.push(savedInstruction);
-      }
-
-      const data = await queryRunner.manager.save(Recipe, savedRecipe);
+      const data = await queryRunner.manager.save(Recipe, recipe);
       await queryRunner.commitTransaction();
       return data;
     } catch (error) {
-      // since we have errors lets rollback the changes we made
       await queryRunner.rollbackTransaction();
       throw error;
     } finally {
-      // you need to release a queryRunner which was manually instantiated
       await queryRunner.release();
     }
   }
