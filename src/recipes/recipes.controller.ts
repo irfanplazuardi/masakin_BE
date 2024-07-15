@@ -13,7 +13,13 @@ import {
 import { RecipesService } from './recipes.service';
 import { CreateRecipeDto } from './dtos/create-recipe.dto';
 import { UpdateRecipeDto } from './dtos/update-recipe.dto';
-import { ApiBearerAuth, ApiQuery, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiQuery,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import { AuthGuard } from 'src/libs/guard/auth.guard';
 
 @ApiBearerAuth()
@@ -24,6 +30,11 @@ export class RecipesController {
 
   @Post()
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to create new recipe' })
+  @ApiResponse({
+    status: 201,
+    description: 'The recipe has been successfully created.',
+  })
   createRecipe(@Body() recipeData: CreateRecipeDto, @Req() req) {
     const user_id: string = req.user.sub;
     return this.recipesService.createRecipe(recipeData, user_id);
@@ -31,12 +42,14 @@ export class RecipesController {
 
   @Get()
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to get all recipes' })
   findAllRecipe() {
     return this.recipesService.findAllRecipe();
   }
 
   @Get('/recent')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to get all recipes in latest created order' })
   @ApiQuery({ name: 'category', required: false, type: String })
   findRecentRecipes(@Query('category') category?: string) {
     return this.recipesService.findRecentRecipes(category);
@@ -44,12 +57,14 @@ export class RecipesController {
 
   @Get(':id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to get recipe by id' })
   findRecipeByID(@Param('id') id: string) {
     return this.recipesService.findRecipeByID(+id);
   }
 
   @Patch(':id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to update recipe' })
   updateRecipe(
     @Param('id') id: string,
     @Body() updateRecipeDto: UpdateRecipeDto,
@@ -59,6 +74,7 @@ export class RecipesController {
 
   @Delete(':id')
   @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to remove recipe' })
   removeRecipe(@Param('id') id: string) {
     return this.recipesService.removeRecipe(+id);
   }
