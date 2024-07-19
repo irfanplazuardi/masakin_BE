@@ -141,6 +141,30 @@ export class RecipesService {
     });
   }
 
+  async findPopularRecipes(category?: string): Promise<Recipe[]> {
+    const whereCondition = {};
+
+    if (category) {
+      whereCondition['categories'] = { name: category };
+    }
+
+    return this.recipeRepository.find({
+      select: {
+        id: true,
+        title: true,
+        image_url: true,
+        recipe_rating: true,
+        time_estimation: true,
+        created_at: true,
+      },
+      relations: {
+        categories: true,
+      },
+      where: whereCondition,
+      order: { recipe_rating: 'DESC' },
+      take: 10,
+    });
+  }
   async findRecipeByID(id: number): Promise<any> {
     const recipe = await this.recipeRepository.findOne({
       where: { id },
