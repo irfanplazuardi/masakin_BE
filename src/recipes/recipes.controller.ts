@@ -55,6 +55,14 @@ export class RecipesController {
     return this.recipesService.findRecentRecipes(category);
   }
 
+  @Get('/popular')
+  @UseGuards(AuthGuard)
+  @ApiOperation({ summary: 'to get all recipes in highest rating order' })
+  @ApiQuery({ name: 'category', required: false, type: String })
+  findPopularRecipes(@Query('category') category?: string) {
+    return this.recipesService.findPopularRecipes(category);
+  }
+
   @Get(':id')
   @UseGuards(AuthGuard)
   @ApiOperation({ summary: 'to get recipe by id' })
