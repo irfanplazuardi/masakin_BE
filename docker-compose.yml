@@ -16,20 +16,20 @@ services:
       timeout: 5s
       retries: 5
 
-  masakin_be:
-    build: .
-    ports:
-      - '3000:3000'
-    environment:
-      - JWT_SECRET_KEY=This is jwt secret key
-      - DB_HOST=postgres_db
-      - DB_PORT=5432 # This should match the internal port of the Postgres container
-      - DB_USERNAME=devuser
-      - DB_PASSWORD=password123
-      - DB_DATABASE=masakinDB
-      - DB_SYNCHRONIZE=true
-    depends_on:
-      - postgres_db
+  # masakin_be:
+  #   build: .
+  #   ports:
+  #     - '3000:3000'
+  #   environment:
+  #     - JWT_SECRET_KEY=This is jwt secret key
+  #     - DB_HOST=postgres_db
+  #     - DB_PORT=5432 # This should match the internal port of the Postgres container
+  #     - DB_USERNAME=devuser
+  #     - DB_PASSWORD=password123
+  #     - DB_DATABASE=masakinDB
+  #     - DB_SYNCHRONIZE=true
+  #   depends_on:
+  #     - postgres_db
 
 volumes:
   db-data:

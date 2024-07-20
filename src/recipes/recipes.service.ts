@@ -32,7 +32,6 @@ export class RecipesService {
 
     await queryRunner.connect();
     await queryRunner.startTransaction();
-
     try {
       const recipe = await queryRunner.manager.save(Recipe, {
         ...recipeDetails,
@@ -181,12 +180,13 @@ export class RecipesService {
       throw new NotFoundException(`Recipe with id ${id} not found`);
     }
 
-    const { user, ...recipeData } = recipe;
+    const { user, instructions, ...recipeData } = recipe;
 
     return {
       id: recipe.id,
       user_id: user?.user_id,
       ...recipeData,
+      instructions: instructions.sort((a, b) => a.step_number - b.step_number), // hallo, i try to sort the instruction.
       ingredients: recipe.ingredients.map((ingredient) => ({
         id: ingredient.ingredient.id,
         quantity: ingredient.quantity,
