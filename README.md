@@ -1,37 +1,61 @@
 <p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
+  <a href="" target="blank">
+  <img src="doc/masakin.png" width="600" alt="Nest Logo" />
+  </a>
 </p>
 
 [circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
 [circleci-url]: https://circleci.com/gh/nestjs/nest
 
 </p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
 
-# Massakin API
+# Masakin
 
-- [ ] what is the app about
+Masakin is a feature-rich application designed to provide a wide variety of food recipes. Built with a robust technology stack, Masakin ensures a secure, efficient, and user-friendly experience.
 
-Masakin API using nest js as the framework. We use the framework to bring structure on our project. nest js structure not only give
+## Technologies Used
 
-The api serve the data of many kind of food recipe.
+- **Framework**: [NestJS](https://nestjs.com/)
+- **Database**: [PostgreSQL](https://www.postgresql.org/)
+- **Authentication**: [JSON Web Tokens (JWT)](https://jwt.io/)
+- **API Documentation**: [Swagger UI](https://swagger.io/tools/swagger-ui/)
 
-## Installation
+## Key Features
 
-```bash
-$ npm install
-```
+- **Diverse Recipe Collection**: Browse through an extensive list of recipes from various cuisines.
+- **Secure Authentication**: User authentication is managed with JWT to ensure secure access.
+- **Comprehensive API Documentation**: Easily explore and test the API endpoints through Swagger UI.
+- **Scalable Architecture**: Built with NestJS, the application is designed to be modular and maintainable.
 
-## Running the app
+## Getting Started
 
-```bash
-# development
-$ npm run start
+To get a local copy up and running, follow these steps:
 
-# watch mode
-$ npm run start:dev
+1. **Clone the repository**:
 
-# production mode
-$ npm run start:prod
-```
+   ```bash
+   git clone https://github.com/your-username/masakin.git
+   ```
+
+2. **Navigate to the project directory**:
+
+   ```bash
+   cd masakin
+   ```
+
+3. **Install dependencies**:
+
+   ```bash
+   npm install
+   ```
+
+4. **Set up the PostgreSQL database** and configure the connection in the `.env` file.
+
+5. **Run the application**:
+
+   ```bash
+   npm run start:dev
+   ```
+
+6. **Access the API documentation**:
+   Open your browser and navigate to `http://localhost:3000/api`.
